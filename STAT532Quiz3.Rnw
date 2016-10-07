@@ -36,7 +36,8 @@ delta.i<-sample(delta,size=num.sims,replace=TRUE,prob=probs)
 theta.i<-rnorm(num.sims,mean=mu[delta.i],sd=sigma)
 hist(theta.i,probability = TRUE,breaks=seq(-6,6,by=.2))
 x.seq<-seq(-5,5,by=.01)
-dens<-.45*dnorm(x.seq,mean=-3,sd=sigma)+.10*dnorm(x.seq,mean=0,sd=sigma)+.45*dnorm(x.seq,mean=3,sd=sigma)
+dens<-.45*dnorm(x.seq,mean=-3,sd=sigma)+.10*dnorm(x.seq,mean=0,sd=sigma)+
+  .45*dnorm(x.seq,mean=3,sd=sigma)
 lines(x.seq,dens,lwd=4)
 @
 
@@ -45,15 +46,57 @@ lines(x.seq,dens,lwd=4)
 num.sims<-100
 phi<-matrix(0,nrow=num.sims,ncol=2)
 phi[1,1]<-0
-phi[1,2]<-0
+phi[1,2]<-1
+p<-rep(0,3)
 for (i in 2:num.sims) {
-  phi[i,1]<-rnorm(1,mu[delta.i],sd=sigma)
+  phi[i,1]<-rnorm(n=1,mean=mu[phi[i-1,2]],sd=sigma)
+  denom<-.45*dnorm(x=phi[i,1],mean=-3,sd=sigma)+.10*dnorm(
+    x=phi[i,1],mean=0,sd=sigma)+.45*dnorm(x=phi[i,1],mean=3,sd=sigma)
+  for (j in 1:3) {
+    p[j]<-(probs[j]*dnorm(x=phi[i,1],mean=mu[j],sd=sigma))/denom
+  }
+  phi[i,2]<-sample(delta,size=1,prob=p)
 }
-for (i in 1:num.sims) {
-  phi[i,2]<-(probs[delta.i]*dnorm(x=phi[i-1,1],mean=mu[delta.i],sd=sigma))/sum(probs*phi[i-1,1])
-}
-dnorm(x=phi[1,1],mean=mu[1],sd=sigma)
+hist(phi[,1],probability=TRUE)
+lines(x.seq,dens,lwd=4)
+plot(phi[,1])
 
+num.sims<-1000
+phi<-matrix(0,nrow=num.sims,ncol=2)
+phi[1,1]<-0
+phi[1,2]<-1
+p<-rep(0,3)
+for (i in 2:num.sims) {
+  phi[i,1]<-rnorm(n=1,mean=mu[phi[i-1,2]],sd=sigma)
+  denom<-.45*dnorm(x=phi[i,1],mean=-3,sd=sigma)+.10*dnorm(
+    x=phi[i,1],mean=0,sd=sigma)+.45*dnorm(x=phi[i,1],mean=3,sd=sigma)
+  for (j in 1:3) {
+    p[j]<-(probs[j]*dnorm(x=phi[i,1],mean=mu[j],sd=sigma))/denom
+  }
+  phi[i,2]<-sample(delta,size=1,prob=p)
+}
+hist(phi[,1],probability=TRUE)
+lines(x.seq,dens,lwd=4)
+plot(phi[,1])
+
+num.sims<-10000
+phi<-matrix(0,nrow=num.sims,ncol=2)
+phi[1,1]<-0
+phi[1,2]<-1
+p<-rep(0,3)
+for (i in 2:num.sims) {
+  phi[i,1]<-rnorm(n=1,mean=mu[phi[i-1,2]],sd=sigma)
+  denom<-.45*dnorm(x=phi[i,1],mean=-3,sd=sigma)+.10*dnorm(
+    x=phi[i,1],mean=0,sd=sigma)+.45*dnorm(x=phi[i,1],mean=3,sd=sigma)
+  for (j in 1:3) {
+    p[j]<-(probs[j]*dnorm(x=phi[i,1],mean=mu[j],sd=sigma))/denom
+  }
+  phi[i,2]<-sample(delta,size=1,prob=p)
+}
+hist(phi[,1],probability=TRUE)
+lines(x.seq,dens,lwd=4)
+plot(phi[,1])
 @
 
+\end{enumerate}
 \end{document}
